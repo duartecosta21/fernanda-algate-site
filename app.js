@@ -35,9 +35,11 @@ $$('[data-count]').forEach(function(el){
 var steps=$('.steps');
 if(steps&&!reduce){
  var tick=false;
- function rail(){tick=false;var r=steps.getBoundingClientRect(),h=W.innerHeight,p=(h*.6-r.top)/r.height;steps.style.setProperty('--p',Math.max(0,Math.min(1,p)).toFixed(3))}
+ var stl=$$('.step',steps);
+ function rail(){tick=false;var r=steps.getBoundingClientRect(),h=W.innerHeight,p=(h*.6-r.top)/r.height;steps.style.setProperty('--p',Math.max(0,Math.min(1,p)).toFixed(3));
+  stl.forEach(function(s){var b=s.getBoundingClientRect();s.classList.toggle('on',b.top+20<h*.6)})}
  W.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(rail)}},{passive:true});rail();
-}else if(steps){steps.style.setProperty('--p',1)}
+}else if(steps){steps.style.setProperty('--p',1);$$('.step',steps).forEach(function(s){s.classList.add('on')})}
 // parallax suave na foto da abertura (so desktop)
 var pimg=$('.arch img');
 if(pimg&&!reduce&&W.matchMedia('(min-width:901px)').matches){
@@ -71,7 +73,7 @@ if(f){f.addEventListener('submit',function(e){e.preventDefault();
  var n=(f.nome.value||'').trim(),rota=(f.querySelector('input[name=rota]:checked')||{}).value||'',msg=(f.msg.value||'').trim();
  var t='Olá, Fernanda! Vim pelo site.';
  if(n)t+=' Meu nome é '+n+'.';
- if(rota)t+=' Quero saber mais sobre: '+rota+'.';
- if(msg)t+=' '+msg;
+ if(f.getAttribute('data-kind')==='vertice'){if(rota)t+=' Sou '+rota+'.';if(msg)t+=' Condomínio: '+msg}
+ else{if(rota)t+=' Quero saber mais sobre: '+rota+'.';if(msg)t+=' '+msg}
  W.open(wa(t),'_blank','noopener')})}
 })();
